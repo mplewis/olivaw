@@ -7,10 +7,22 @@ from random import randint
 
 class BFBot(Bot):
     def __init__(self, net):
-        self.tenative = []
+        self.trade_suggestions = [] #[peer to trade, timeout]
+        self.confirmed_trades = [] #[peer you're trading, peer to merge into list once ack recieved]
         super().__init__(net)
 
     def tick(self):
+		#decrement and check trade_suggestions
+		for i in range(len(self.trade_suggestions)):
+			suggestion = self.trade_suggestions[i]
+			suggestion[1] -= 1
+			if suggestion[1] < 0:
+				self.peers.append(int(suggestion[0]))
+				self.trade_suggestions.remove(suggestion)
+				i -= 1
+			
+			
+		#select random action
         select = randint(1,20)
         if select == 1:
             address = self.peers[randint(0,len(self.peers)-1)]
@@ -18,6 +30,10 @@ class BFBot(Bot):
             net.send(self.id, address, "ping")
         if select == 2:
             self.getPeer()
+        if select == 3:
+			#Set up trade suggestion and send
+			trade_peer = createTradeSuggestion()
+			net.send(self.id, self.peers[randint(0,len(self.peers)-1)], "suggestTrade:{}".format(trade_peer))
         if select > 18:
             self.getCommand()
         #process all messages in queue
@@ -28,14 +44,17 @@ class BFBot(Bot):
             if message == "ping":
                 # print("Hi {}, this is {}".format(srcID, self.id))
                 net.send(self.id, srcID, "pong")
+                continue
             if message == "pong":
                 #check tenative for srcID, if there, replace a peer
                 if srcID in self.tenative:
                     self.peers[randint(0,len(self.peers)-1)] = srcID
                     self.tenative.remove(srcID)
+                continue
             if message == "getPeer":
                 net.send(self.id, srcID,
                  "getPeerResponse:{}".format(self.peers[randint(0,len(self.peers)-1)]))
+                continue
             if "getPeerResponse" in message:
                 #parse out address
                 recievedPeer = int(message[message.index(":")+1:])
@@ -44,13 +63,43 @@ class BFBot(Bot):
                     #Ping this peer and see if they exist
                     self.tenative.append(recievedPeer)
                     net.send(self.id, recievedPeer, "ping")
+			    continue
             if message == "getCommand":
                 net.send(self.id, srcID, 
                     "getCommandResponse:{},{}".format(self.command[0], self.command[1]))
+                continue
             if "getCommandResponse" in message:
                 commandNumber = int(message[message.index(":")+1:message.index(",")])
                 if commandNumber > self.command[0]:
                     self.command = (commandNumber, message[message.index(",")+1:])
+                continue
+            #suggested trade
+            if "suggestTrade:" in message:
+				#ensure suggestion is not already a peer
+				recievedPeer = int(message[message.index(":")+1:])
+				if recievedPeer not in self.peers:
+					#create your own trade suggestion, send confirm
+					trade_peer = createTradeSuggestion()
+					net.send(self.id, srcID, "confirmTrade:{},{}".format(trade_peer, recievedPeer))
+				continue
+            #confirm trade desire and offer peer
+            if "confirmTrade:" in message:
+				#ensure suggestion is not already a peer
+				recievedPeer = int(message[message.index(":")+1:message.index(",")])
+				if recievedPeer not in self.peers:
+					#move peer to confirmed, send ack on pong response
+					suggestionID = message[message.index(",")+1:]
+					for suggestion in self.trade_suggestions:
+						if suggestion[0] == suggestionID:
+							self.trade_suggestions.remove(suggestion)
+							self.confirmed_trades.append([suggestionID, recievedPeer])
+							net.send(self.id, recievedPeer, "ping")
+							break
+				continue
+            #acknowledge
+            
+            #acknowledge back
+            
             self.messages.pop(0)
 
     def getPeer(self):
@@ -64,6 +113,11 @@ class BFBot(Bot):
         address = self.peers[randint(0,len(self.peers)-1)]
         #ask for its current command
         net.send(self.id, address, "getCommand")
+    
+    def createTradeSuggestion(self):
+		trade_peer = int(self.peers.pop(randint(0,len(self.peers)-1)))
+		self.trade_suggestions.append([trade_peer, 10])
+		return trade_peer
 
 class TestNet(Net):
     def tick(self):
