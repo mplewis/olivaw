@@ -6,16 +6,25 @@ class Net:
         self.ticks = 0
         self.commandNumber = 1
         self.bots = []
+        self.messages = []
 
     def tick(self):
         self.ticks += 1
+        #send all messages
+        while len(self.messages)>0:
+            m = self.messages[0]
+            srcID = int(m[0])
+            destID = int(m[1])
+            msg = m[2]
+            for bot in self.bots:
+                if bot.id == destID:
+                    bot.recieve(srcID, msg)
+            self.messages.pop(0)
         for bot in self.bots:
             bot.tick()
 
     def send(self, srcID, destID, msg):
-        for bot in self.bots:
-            if bot.id == destID:
-                bot.recieve(srcID, msg)
+        self.messages.append((srcID, destID, msg))
 
     def command(self):
         #send new command to a random bot
@@ -31,6 +40,7 @@ class Bot:
     def __init__(self, net):
         #peers == a list of bot ids.
         self.peers = []
+        self.messages = []
         self.id = randint(10000, 99999)
         self.net = net
         self.command = (0, "v.0")
@@ -39,6 +49,6 @@ class Bot:
                'each timestep.')
         raise NotImplementedError(err)
     def recieve(self, srcID, message):
-        err = ('Bot must implement a recieve() method which indicates '
-                'how the bot takes action on messages.')
-        raise NotImplementedError(err)
+        srcID = int(srcID)
+        self.messages.append((srcID, message))
+        return
