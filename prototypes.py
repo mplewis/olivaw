@@ -13,18 +13,20 @@ class Net:
         #send all messages
         while len(self.messages)>0:
             m = self.messages[0]
-            srcID = int(m[0])
-            destID = int(m[1])
-            msg = m[2]
+            srcID = int(m.source)
+            destID = int(m.destination)
             for bot in self.bots:
                 if bot.id == destID:
-                    bot.recieve(srcID, msg)
+                    bot.recieve(m)
             self.messages.pop(0)
         for bot in self.bots:
             bot.tick()
 
     def send(self, srcID, destID, msg):
         self.messages.append((srcID, destID, msg))
+
+    def send(self, message):
+        self.messages.append(message)
 
     def command(self):
         #send new command to a random bot
@@ -52,3 +54,13 @@ class Bot:
         srcID = int(srcID)
         self.messages.append((srcID, message))
         return
+    def recieve(self, msg):
+        self.messages.append(msg)
+        return
+
+class Message:
+    def __init__(self, srcID, destID, msg):
+        self.source = int(srcID)
+        self.destination = int(destID)
+        self.messageTitle = msg[:msg.index(":")]
+        self.messageDetails = msg[msg.index(":")+1:].translate(str.maketrans("","","[]()\'\"")).split(", ")
