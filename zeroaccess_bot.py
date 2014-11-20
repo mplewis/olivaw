@@ -35,5 +35,6 @@ class ZeroAccessBot(Bot):
                 peers_to_remove -= 1
         self.peers.extend(unknown_peers)
 
+        # If the peer is more up-to-date, update self from peer
         if peer.version > self.version:
             self.version = peer.version

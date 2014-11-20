@@ -3,6 +3,8 @@ from prototypes import Net
 
 class ZeroAccessNet(Net):
     def tick(self):
+        # Print statistics on botnet each tick:
+        # tick count, latest version, {version: bot count with version, ...}
         version_count = {}
         for bot in self.bots:
             if bot.version not in version_count:
