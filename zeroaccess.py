@@ -32,29 +32,25 @@ if __name__ == '__main__':
     for x in range(INITIAL_BOTS):
         bot = ZeroAccessBot()
         net.bots.append(bot)
-    # Give each bot one peer to start
+    # Give each bot n peers to start
     for bot in net.bots:
-        for x in range(INITIAL_PEERS):
-            peer = bot
-            while peer == bot:
-                peer = random.choice(net.bots)
-            bot.peers.append(peer)
+        new_peers = None
+        while new_peers is None or bot not in new_peers:
+            new_peers = random.sample(list(net.bots), INITIAL_PEERS)
+        bot.peers.extend(new_peers)
 
     # Run the botnet
     latest_version = 0
     for tick in range(SIM_TICKS):
-        net.tick()
         # Every n ticks, give a random bot a newly-released version
         if net.ticks % NEW_VER_EVERY == 0:
             latest_version += 1
             bot = random.choice(net.bots)
             bot.version = latest_version
-        # Every n ticks, add a new bot to the net
+        # Every n ticks, add a new bot to the net with n initial peers
         if net.ticks % NEW_BOT_EVERY == 0:
             bot = ZeroAccessBot()
-            for x in range(INITIAL_PEERS):
-                peer = bot
-                while peer == bot:
-                    peer = random.choice(net.bots)
-                bot.peers.append(peer)
+            new_peers = random.sample(list(net.bots), INITIAL_PEERS)
+            bot.peers.extend(new_peers)
             net.bots.append(bot)
+        net.tick()
