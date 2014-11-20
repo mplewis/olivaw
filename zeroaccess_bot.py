@@ -22,11 +22,11 @@ class ZeroAccessBot(Bot):
         return ('<ZeroAccessBot: {}, v{}, {} known peers>'
                 .format(self.address, self.version, len(self.peers)))
 
-    def __init__(self, address):
+    def __init__(self, address, version=0):
         super().__init__()
         self.address = address
         self.peers = deque()
-        self.version = 0
+        self.version = version
 
     def tick(self):
         # Grab a peer from the known peerlist
@@ -35,7 +35,7 @@ class ZeroAccessBot(Bot):
         # If the peer knows more than 16 peers, receive 16 of them
         # Otherwise, receive all (1-15) peers
         if len(peer.peers) > 16:
-            peer_bots = random.sample(peer.peers, 16)
+            peer_bots = random.sample(list(peer.peers), 16)
         else:
             peer_bots = peer.peers
 
@@ -45,7 +45,7 @@ class ZeroAccessBot(Bot):
             while (len(self.peers) > 0 and peers_to_remove > 0):
                 self.peers.popleft()
                 peers_to_remove -= 1
-            self.peers.extend(peer_bots)
+        self.peers.extend(peer_bots)
 
         if peer.version > self.version:
             self.version = peer.version
