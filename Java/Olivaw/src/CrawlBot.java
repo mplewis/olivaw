@@ -3,11 +3,11 @@ import java.util.*;
 public class CrawlBot extends GoodBot {
 
     private Set<ZeroAccessBot> discoveredBots = new HashSet<ZeroAccessBot>();
-    
+
     @Override
     public void tick() {
         Set<ZeroAccessBot> newBots = new HashSet<ZeroAccessBot>();
-        
+
         for (ZeroAccessBot bot : discoveredBots) {
             List<ZeroAccessBot> peers = bot.knownPeers(this);
             for (ZeroAccessBot peer : peers) {
@@ -28,8 +28,8 @@ public class CrawlBot extends GoodBot {
     }
 
     public void setPeers(Deque<ZeroAccessBot> peers) {
-        for ( ZeroAccessBot peer : peers ) {
-            discoveredBots.add(newBot);
+        for (ZeroAccessBot peer : peers) {
+            discoveredBots.add(peer);
         }
         super.setPeers(peers);
     }
