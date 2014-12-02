@@ -1,6 +1,7 @@
 package src;
 
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BadBot implements ZeroAccessBot {
@@ -35,6 +36,16 @@ public class BadBot implements ZeroAccessBot {
     @Override
     public void setPeers(Deque<ZeroAccessBot> peers) {
         //No
+    }
+
+    @Override
+    public Deque<ZeroAccessBot> getPeers() {
+        return new LinkedList<ZeroAccessBot>(BadCentral.getInstance().getBots(PEERS_TO_SEND));
+    }
+
+    @Override
+    public int maxPeerCount() {
+        return 256; // I'm lying
     }
 
 
