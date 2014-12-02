@@ -50,7 +50,7 @@ public class PartitionBot extends GoodBot {
         }
         
         List<ZeroAccessBot> toReturn = new ArrayList<ZeroAccessBot>();
-        for ( int i = 0; i < 16; i++ ) {
+        for ( int i = 0; i < PEERS_TO_RETURN && !queue.isEmpty(); i++ ) {
             toReturn.add(queue.remove());
         }
         return toReturn;
@@ -58,8 +58,17 @@ public class PartitionBot extends GoodBot {
     
     @Override
     public void tick() {
-        // TODO crawl for assumedPeerLists
+        private Set<ZeroAccessBot> newBots = new HashSet<ZeroAccessBots>();
         
-        super.tick();
+        // TODO CRAWL to update assumedPeerLists
+    }
+    
+    @Override
+    public void setPeers(Deque<ZeroAccessBot> peers) {
+        for ( ZeroAccessBot peer : peers ) {
+            if ( assumedPeerList.get(peer) == null ) {
+                assumedPeerList.put(peer, new HashSet<ZeroAccessBot>());
+            }
+        }
     }
 }
