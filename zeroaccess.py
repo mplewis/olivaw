@@ -19,10 +19,10 @@ increasing to match the peer with the more recent payload.
 """
 
 
-INITIAL_BOTS = 100
+INITIAL_BOTS = 1000
 INITIAL_PEERS = 16
-SIM_TICKS = 60 * 60 * 4  # 4 hours
-NEW_VER_EVERY = 60 * 10  # 5 minutes
+SIM_TICKS = 60 * 60 * 24  # 24 hours
+NEW_VER_EVERY = 60 * 60 * 1  # 1 hour
 NEW_BOT_EVERY = 60 * 2  # 2 minutes
 
 if __name__ == '__main__':
