@@ -81,11 +81,16 @@ public class PartitionBot extends GoodBot {
     }
     
     @Override
+    public void adoptPeer(ZeroAccessBot newBot) {
+        if ( assumedPeerLists.get(newBot) == null ) {
+            assumedPeerLists.put(newBot, new HashSet<ZeroAccessBot>());
+        }
+    }
+    
+    @Override
     public void setPeers(Deque<ZeroAccessBot> peers) {
         for ( ZeroAccessBot peer : peers ) {
-            if ( assumedPeerLists.get(peer) == null ) {
-                assumedPeerLists.put(peer, new HashSet<ZeroAccessBot>());
-            }
+            this.adoptPeer(peer);
         }
     }
 }
