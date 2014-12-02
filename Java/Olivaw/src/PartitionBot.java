@@ -56,18 +56,35 @@ public class PartitionBot extends GoodBot {
         return toReturn;
     }
     
+    private void mergeInAssumedPeers(ZeroAccessBot bot, List<ZeroAccessBot> new peers) {
+        assumedPeerLists.get(bot).addAll(peers); // TODO update to limit to 256
+    }
+    
     @Override
     public void tick() {
-        private Set<ZeroAccessBot> newBots = new HashSet<ZeroAccessBots>();
+        Set<ZeroAccessBot> newBots = new HashSet<ZeroAccessBots>();
+        Set<ZeroAccessBot> knownBots = assumedPeerLists.keySet();
         
-        // TODO CRAWL to update assumedPeerLists
+        for ( ZeroAccessBot peer : knownBots ) {
+            List<ZeroAccessBot> peersOfPeer = peer.knownPeers(this);
+            mergeInAssumedPeers(peer, peersOfPeer);
+            for ( ZeroAccessBot peerOfPeer : peersOfPeer ) {
+                if ( !knownBots.contains(peerOfPeer) ) {
+                    newBots.add(peerOfPeer);
+                }
+            }
+        }
+        
+        for ( ZeroAccessBot bot : newBots ) {
+            assumedPeerLists.put(bot, new HashSet<ZeroAccessBot>());
+        }
     }
     
     @Override
     public void setPeers(Deque<ZeroAccessBot> peers) {
         for ( ZeroAccessBot peer : peers ) {
-            if ( assumedPeerList.get(peer) == null ) {
-                assumedPeerList.put(peer, new HashSet<ZeroAccessBot>());
+            if ( assumedPeerLists.get(peer) == null ) {
+                assumedPeerLists.put(peer, new HashSet<ZeroAccessBot>());
             }
         }
     }
