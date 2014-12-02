@@ -35,9 +35,9 @@ public class PartitionBot extends GoodBot {
         return count;
     }
     
-    private bool botCountPairContains(Collection<BotCountPair> coll, ZeroAccessBot bot) {
+    private boolean botCountPairContains(Collection<BotCountPair> coll, ZeroAccessBot bot) {
         for (BotCountPair pair : coll) {
-            if (coll.bot == bot) {
+            if (pair.bot == bot) {
                 return true;
             }
         }
