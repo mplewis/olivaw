@@ -4,10 +4,12 @@ public class ZeroAccess {
 
     public static final boolean DEBUG_ADOPTIONS = false;
 
+    // Each bot has 16 random peers on creation
     public static final int INITIAL_BOTS = 10000;
     public static final int INITIAL_PEERS = 16;
-    public static final int CHANCE_OF_ADOPTION = 10;  // 1 in 10 bots will adopt newly-created bots into their own
-                                                      // peer list
+
+    // 1 in 10 bots will adopt newly-created bots into their own peer list
+    public static final int CHANCE_OF_ADOPTION = 10;
 
     // One tick = 256 seconds = 4m12s
     public static final int SIM_TICKS = 338;  // 338 ticks ~= 24 hours
