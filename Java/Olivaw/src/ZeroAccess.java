@@ -53,7 +53,18 @@ public class ZeroAccess {
 
             // Every NEW_BOT_EVERY ticks, add a new bot to the net with n initial peers
             if (net.getTicks() % NEW_BOT_EVERY == 0) {
-                ZeroAccessBot newBot = new GoodBot();
+                ZeroAccessBot newBot;
+                int whichBot = rng.nextInt(50);
+                if (whichBot == 0) {
+                    newBot = new PartitionBot();
+                } else if (whichBot == 1) {
+                    newBot = new CrawlBot();
+                } else if (whichBot < 7) {
+                    newBot = new SensorBot();
+                } else {
+                    newBot = new GoodBot();
+                }
+                
                 List<ZeroAccessBot> allBots = net.getBots();
                 Deque<ZeroAccessBot> newPeers = new LinkedList<ZeroAccessBot>();
                 for (int i = 0; i < INITIAL_PEERS; i++) {
