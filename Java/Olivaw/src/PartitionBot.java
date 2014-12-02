@@ -34,22 +34,29 @@ public class PartitionBot extends GoodBot {
 
         return count;
     }
+    
+    private bool botCountPairContains(Collection<BotCountPair> coll, ZeroAccessBot bot) {
+        for (BotCountPair pair : coll) {
+            if (coll.bot == bot) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
         Set<ZeroAccessBot> callerPeers = assumedPeerLists.get(caller);
         PriorityQueue<BotCountPair> queue = new PriorityQueue<BotCountPair>();
 
-        /* TODO: UNCOMMENT AND FIX
         for (ZeroAccessBot peer : callerPeers) {
             Set<ZeroAccessBot> peersOfPeer = assumedPeerLists.get(peer);
             for (ZeroAccessBot peerOfPeer : peersOfPeer) {
-                if (!queue.contains(peerOfPeer)) {
+                if (!botCountPairContains(queue,peerOfPeer)) {
                     queue.add(new BotCountPair(peerOfPeer, sharedPeers(caller, peerOfPeer)));
                 }
             }
         }
-        */
 
         List<ZeroAccessBot> toReturn = new ArrayList<ZeroAccessBot>();
         for (int i = 0; i < PEERS_TO_RETURN && !queue.isEmpty(); i++) {
