@@ -11,9 +11,4 @@ public class SensorBot extends GoodBot {
         }
         return super.knownPeers();
     }
-
-    @Override
-    public void tick() {
-        super.tick();
-    }
 }
