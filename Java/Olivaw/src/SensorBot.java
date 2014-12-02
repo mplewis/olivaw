@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class SensorBot extends GoodBot {
+public class SensorBot extends EnumerationBot {
 
     private List<ZeroAccessBot> sensedPeers = new ArrayList<ZeroAccessBot>();
 
@@ -12,7 +12,8 @@ public class SensorBot extends GoodBot {
         return super.knownPeers(this);
     }
 
-    public List<ZeroAccessBot> getSensedPeers() {
+    @Override
+    public Collection<ZeroAccessBot> getEnumeratedBots() {
         return sensedPeers;
     }
 }

@@ -2,7 +2,8 @@ import java.util.*;
 
 public class PartitionBot extends GoodBot {
 
-    private Map<ZeroAccessBot, Set<ZeroAccessBot>> assumedPeerLists = new HashMap<ZeroAccessBot, Set<ZeroAccessBot>>();
+    private Map<ZeroAccessBot, Deque<ZeroAccessBot>> assumedPeerLists = new HashMap<ZeroAccessBot, Deque<ZeroAccessBot>>();
+    private static final int MAX_ASSUMED_PEERLIST_SIZE = 16;
 
     protected class BotCountPair implements Comparable {
         public int count;
@@ -22,9 +23,13 @@ public class PartitionBot extends GoodBot {
 
     // calculates number of shared peers based on assumedPeerLists
     private int sharedPeers(ZeroAccessBot a, ZeroAccessBot b) {
-        Set<ZeroAccessBot> apeers = assumedPeerLists.get(a);
-        Set<ZeroAccessBot> bpeers = assumedPeerLists.get(b);
+        Collection<ZeroAccessBot> apeers = assumedPeerLists.get(a);
+        Collection<ZeroAccessBot> bpeers = assumedPeerLists.get(b);
         int count = 0;
+
+        if ( apeers == null || bpeers == null ) {
+            return 0;
+        }
 
         for (ZeroAccessBot apeer : apeers) {
             if (bpeers.contains(apeer)) {
@@ -46,14 +51,14 @@ public class PartitionBot extends GoodBot {
 
     @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
-        Set<ZeroAccessBot> callerPeers = assumedPeerLists.get(caller);
-        if ( callerPeers == null ) {
+        Collection<ZeroAccessBot> callerPeers = assumedPeerLists.get(caller);
+        if ( callerPeers == null || callerPeers.isEmpty() ) {
             return super.knownPeers(caller);
         }
         PriorityQueue<BotCountPair> queue = new PriorityQueue<BotCountPair>();
 
         for (ZeroAccessBot peer : callerPeers) {
-            Set<ZeroAccessBot> peersOfPeer = assumedPeerLists.get(peer);
+            Collection<ZeroAccessBot> peersOfPeer = assumedPeerLists.get(peer);
             for (ZeroAccessBot peerOfPeer : peersOfPeer) {
                 if (!botCountPairContains(queue,peerOfPeer)) {
                     queue.add(new BotCountPair(peerOfPeer, sharedPeers(caller, peerOfPeer)));
@@ -68,17 +73,32 @@ public class PartitionBot extends GoodBot {
         return toReturn;
     }
 
-    private void mergeInAssumedPeers(ZeroAccessBot bot, List<ZeroAccessBot> peers) {
-        assumedPeerLists.get(bot).addAll(peers); // TODO update to limit to 256
+    private void mergeInAssumedPeers(ZeroAccessBot bot, Collection<ZeroAccessBot> peers) {
+        for (ZeroAccessBot peer : peers) {
+            if (assumedPeerLists.get(bot).contains(peer)) {
+                assumedPeerLists.get(bot).remove(peer);
+            } else if (assumedPeerLists.get(bot).size() >= MAX_ASSUMED_PEERLIST_SIZE) {
+                assumedPeerLists.get(bot).remove();
+            }
+            assumedPeerLists.get(bot).add(peer);
+        }
     }
 
     @Override
     public void tick() {
-        Set<ZeroAccessBot> newBots = new HashSet<ZeroAccessBot>();
+        Collection<ZeroAccessBot> newBots = new HashSet<ZeroAccessBot>();
+
+        /* update with peers found on last tick */
+        for (ZeroAccessBot bot : this.peers) {
+            if (!assumedPeerLists.keySet().contains(bot)) {
+                newBots.add(bot);
+            }
+        }
+
         Set<ZeroAccessBot> knownBots = assumedPeerLists.keySet();
 
         for (ZeroAccessBot peer : knownBots) {
-            List<ZeroAccessBot> peersOfPeer = peer.knownPeers(this);
+            Collection<ZeroAccessBot> peersOfPeer = peer.knownPeers(this);
             mergeInAssumedPeers(peer, peersOfPeer);
             for (ZeroAccessBot peerOfPeer : peersOfPeer) {
                 if (!knownBots.contains(peerOfPeer)) {
@@ -88,7 +108,7 @@ public class PartitionBot extends GoodBot {
         }
 
         for (ZeroAccessBot bot : newBots) {
-            assumedPeerLists.put(bot, new HashSet<ZeroAccessBot>());
+            assumedPeerLists.put(bot, new ArrayDeque<ZeroAccessBot>());
         }
 
         super.tick();
@@ -97,7 +117,7 @@ public class PartitionBot extends GoodBot {
     @Override
     public void adoptPeer(ZeroAccessBot newBot) {
         if (assumedPeerLists.get(newBot) == null) {
-            assumedPeerLists.put(newBot, new HashSet<ZeroAccessBot>());
+            assumedPeerLists.put(newBot, new ArrayDeque<ZeroAccessBot>());
         }
         super.adoptPeer(newBot);
     }
@@ -105,7 +125,9 @@ public class PartitionBot extends GoodBot {
     @Override
     public void setPeers(Deque<ZeroAccessBot> peers) {
         for (ZeroAccessBot peer : peers) {
-            this.adoptPeer(peer);
+            if (assumedPeerLists.get(peer) == null) {
+                assumedPeerLists.put(peer, new ArrayDeque<ZeroAccessBot>());
+            }
         }
         super.setPeers(peers);
     }

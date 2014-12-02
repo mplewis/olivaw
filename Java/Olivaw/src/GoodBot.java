@@ -6,7 +6,7 @@ public class GoodBot implements ZeroAccessBot {
     protected static final int PEERS_TO_RETURN = 16;
     private static final Random rng = new Random();
 
-    private Deque<ZeroAccessBot> peers = new LinkedList<ZeroAccessBot>();
+    protected Deque<ZeroAccessBot> peers = new LinkedList<ZeroAccessBot>();
 
     private int version;
 

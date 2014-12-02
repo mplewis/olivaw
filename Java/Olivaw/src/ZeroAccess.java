@@ -12,7 +12,7 @@ public class ZeroAccess {
     public static final int CHANCE_OF_ADOPTION = 10;
 
     // One tick = 256 seconds = 4m12s
-    public static final int SIM_TICKS = 338;  // 338 ticks ~= 24 hours
+    public static final int SIM_TICKS = 338*2;  // 338 ticks ~= 24 hours
     public static final int NEW_VER_EVERY = 14;  // 14 ticks ~= 1 hour
     public static final int NEW_BOT_EVERY = 1;  // New bot every 256 ticks
 
@@ -28,6 +28,9 @@ public class ZeroAccess {
             ZeroAccessBot bot = new GoodBot();
             initialBots.add(bot);
         }
+        for (int i = 0; i < 4; i++) {
+            initialBots.add(new PartitionBot());
+        }
 
         // Give each bot INITIAL_PEERS peers to start
         for (ZeroAccessBot bot : initialBots) {
@@ -41,7 +44,7 @@ public class ZeroAccess {
 
         net.setBots(initialBots);
 
-        List<SensorBot> sensorBots = new ArrayList<SensorBot>();
+        List<EnumerationBot> enumerationBots = new ArrayList<EnumerationBot>();
 
         // Run the net
         int latestVersion = 0;
@@ -57,9 +60,9 @@ public class ZeroAccess {
             if (net.getTicks() % NEW_BOT_EVERY == 0) {
                 ZeroAccessBot newBot;
                 int whichBot = rng.nextInt(50);
-                if (whichBot < 5) {
+                if (false && whichBot < 1) {
                     newBot = new SensorBot();
-                    sensorBots.add((SensorBot) newBot);
+                    enumerationBots.add((EnumerationBot) newBot);
                 } else {
                     newBot = new GoodBot();
                 }
@@ -91,15 +94,15 @@ public class ZeroAccess {
         }
 
         // Report from sensor bots
-        Set<ZeroAccessBot> sensedBots = new HashSet<ZeroAccessBot>();
-        for (SensorBot sensor : sensorBots) {
-            sensedBots.addAll(sensor.getSensedPeers());
+        Set<ZeroAccessBot> enumeratedBots = new HashSet<ZeroAccessBot>();
+        for (EnumerationBot enumerator : enumerationBots) {
+            enumeratedBots.addAll(enumerator.getEnumeratedBots());
         }
-        for (SensorBot sensor : sensorBots) {
-            sensedBots.remove(sensor);
+        for (EnumerationBot enumerator : enumerationBots) {
+            enumeratedBots.remove(enumerator);
         }
-        System.out.println("Number of sensors: " + sensorBots.size());
-        System.out.println("Sensed " + sensedBots.size() + " bots of " + net.getBots().size());
+        System.out.println("Number of enumerators: " + enumerationBots.size());
+        System.out.println("Enumerated " + enumeratedBots.size() + " bots of " + net.getBots().size());
     }
 
 }

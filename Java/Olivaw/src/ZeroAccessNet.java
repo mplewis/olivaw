@@ -6,6 +6,7 @@ public class ZeroAccessNet {
     private Map<Integer, Integer> lastVersionCount = new HashMap<Integer, Integer>();
     private final double startTime;
     private long ticks = 0;
+    private double cumulativeAverageSaturation = 0;
 
     public ZeroAccessNet() {
         startTime = System.nanoTime();
@@ -39,11 +40,15 @@ public class ZeroAccessNet {
         // If any bots have changed version, print the new version counts
         if (!lastVersionCount.equals(versionCount)) {
             double now = (System.nanoTime() - startTime) / 1000000000; // nanoseconds as seconds
-            System.out.println(String.format("%.2f %s %s %s",
+            double saturation = (double)versionCount.get(latestVersion)/bots.size();
+            cumulativeAverageSaturation = ((cumulativeAverageSaturation*ticks)+saturation)/(ticks+1);
+            System.out.println(String.format("%.2f %s %s %s %.4f %.4f",
                     now,
                     ticks,
                     latestVersion,
-                    versionCount
+                    versionCount,
+                    saturation,
+                    cumulativeAverageSaturation
             ));
         }
         lastVersionCount = versionCount;

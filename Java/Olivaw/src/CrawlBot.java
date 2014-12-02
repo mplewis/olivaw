@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class CrawlBot extends GoodBot {
+public class CrawlBot extends EnumerationBot {
 
     private Set<ZeroAccessBot> discoveredBots = new HashSet<ZeroAccessBot>();
 
@@ -32,5 +32,10 @@ public class CrawlBot extends GoodBot {
             discoveredBots.add(peer);
         }
         super.setPeers(peers);
+    }
+
+    @Override
+    public Collection<ZeroAccessBot> getEnumeratedBots() {
+        return discoveredBots;
     }
 }
