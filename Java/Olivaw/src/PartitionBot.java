@@ -2,7 +2,7 @@ import java.util.*;
 
 public class PartitionBot extends GoodBot {
 
-    private Map<ZeroAccessBot, Set<ZeroAccessBot>> assumedPeerLists = new HashMap<ZeroAccessBot, HashSet<ZeroAccessBot>>
+    private Map<ZeroAccessBot, Set<ZeroAccessBot>> assumedPeerLists = new HashMap<ZeroAccessBot, Set<ZeroAccessBot>>();
 
     protected class BotCountPair implements Comparable {
         public int count;
