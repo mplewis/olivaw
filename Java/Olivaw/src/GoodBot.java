@@ -19,7 +19,7 @@ public class GoodBot implements ZeroAccessBot {
     }
 
     @Override
-    public List<ZeroAccessBot> knownPeers() {
+    public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
         // If you don't have enough peers, return all of them
         if (peers.size() < PEERS_TO_RETURN) {
             return new ArrayList<ZeroAccessBot>(peers);
@@ -43,11 +43,15 @@ public class GoodBot implements ZeroAccessBot {
         int index = rng.nextInt(peers.size());
         ZeroAccessBot peer = peersList.get(index);
 
-        // Add its known peers to own peerlist, replacing existing peers
-        List<ZeroAccessBot> rcvdPeers = peer.knownPeers();
-        for (ZeroAccessBot newPeer : rcvdPeers) {
-            peers.remove();
+        // Add its known peers to own peer list, replacing existing peers
+        List<ZeroAccessBot> receivedPeers = peer.knownPeers(this);
+        for (ZeroAccessBot newPeer : receivedPeers) {
             peers.add(newPeer);
+        }
+
+        // Trim peers list to MAX_KNOWN_PEER_COUNT
+        while (peers.size() > MAX_KNOWN_PEER_COUNT) {
+            peers.remove();
         }
 
         // If the peer is more up-to-date, update self from peer
