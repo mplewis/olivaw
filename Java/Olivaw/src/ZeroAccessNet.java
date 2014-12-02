@@ -37,8 +37,8 @@ public class ZeroAccessNet {
 
         // If any bots have changed version, print the new version counts
         if (!lastVersionCount.equals(versionCount)) {
-            double now = System.nanoTime() - startTime;
-            System.out.println(String.format("%s %s %s %s",
+            double now = (System.nanoTime() - startTime) / 1000000000; // nanoseconds as seconds
+            System.out.println(String.format("%.2f %s %s %s",
                     now,
                     ticks,
                     latestVersion,

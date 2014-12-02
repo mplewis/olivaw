@@ -2,11 +2,17 @@ import java.util.*;
 
 public class ZeroAccess {
 
-    public static final int INITIAL_BOTS = 1000;
+    public static final boolean DEBUG_ADOPTIONS = false;
+
+    public static final int INITIAL_BOTS = 10000;
     public static final int INITIAL_PEERS = 16;
-    public static final int SIM_TICKS = 60 * 60 * 24;  // 24 hours
-    public static final int NEW_VER_EVERY = 60 * 60;  // 1 hour
-    public static final int NEW_BOT_EVERY = 60 * 2;  // 2 minutes
+    public static final int CHANCE_OF_ADOPTION = 10;  // 1 in 10 bots will adopt newly-created bots into their own
+                                                      // peer list
+
+    // One tick = 256 seconds = 4m12s
+    public static final int SIM_TICKS = 338;  // 338 ticks ~= 24 hours
+    public static final int NEW_VER_EVERY = 14;  // 14 ticks ~= 1 hour
+    public static final int NEW_BOT_EVERY = 1;  // New bot every 256 ticks
 
     private static final Random rng = new Random();
 
@@ -45,14 +51,28 @@ public class ZeroAccess {
 
             // Every NEW_BOT_EVERY ticks, add a new bot to the net with n initial peers
             if (net.getTicks() % NEW_BOT_EVERY == 0) {
-                ZeroAccessBot bot = new GoodBot();
+                ZeroAccessBot newBot = new GoodBot();
                 List<ZeroAccessBot> allBots = net.getBots();
                 Deque<ZeroAccessBot> newPeers = new LinkedList<ZeroAccessBot>();
                 for (int i = 0; i < INITIAL_PEERS; i++) {
                     ZeroAccessBot randomBot = allBots.get(rng.nextInt(allBots.size()));
                     newPeers.add(randomBot);
                 }
-                bot.setPeers(newPeers);
+                newBot.setPeers(newPeers);
+                allBots.add(newBot);
+                net.setBots(allBots);
+
+                // 1 in 10 bots adopts the new bot into its peer list
+                int adoptionCount = 0;
+                for (ZeroAccessBot adoptingBot : allBots) {
+                    if (rng.nextInt(CHANCE_OF_ADOPTION) == 0) {
+                        adoptingBot.adoptPeer(newBot);
+                        adoptionCount++;
+                    }
+                }
+                if (DEBUG_ADOPTIONS) {
+                    System.out.println("    New bot adopted by " + adoptionCount + " bots");
+                }
             }
 
             net.tick();
