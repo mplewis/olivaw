@@ -28,13 +28,21 @@ public class GoodBot implements ZeroAccessBot {
 
     @Override
     public void tick() {
+        // Grab a random known peer
         LinkedList<ZeroAccessBot> peersList = (LinkedList<ZeroAccessBot>) peers;
         int index = rng.nextInt(KNOWN_PEER_COUNT);
         ZeroAccessBot peer = peersList.get(index);
+
+        // Add its known peers to own peerlist, replacing existing peers
         List<ZeroAccessBot> rcvdPeers = peer.knownPeers();
         for (ZeroAccessBot newPeer : rcvdPeers) {
             peers.remove();
             peers.add(newPeer);
+        }
+
+        // If the peer is more up-to-date, update self from peer
+        if (peer.getVersion() > version) {
+            version = peer.getVersion();
         }
     }
 
