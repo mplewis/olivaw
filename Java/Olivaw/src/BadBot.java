@@ -1,5 +1,6 @@
 package src;
 
+import java.util.Deque;
 import java.util.List;
 
 public class BadBot implements ZeroAccessBot{
@@ -10,10 +11,6 @@ public class BadBot implements ZeroAccessBot{
 		BadCentral.getInstance().submit(this);
 	}
 	
-	@Override
-	public List<ZeroAccessBot> knownPeers() {
-		return BadCentral.getInstance().getBots(PEERS_TO_SEND);
-	}
 
 	@Override
 	public void tick() {
@@ -23,6 +20,21 @@ public class BadBot implements ZeroAccessBot{
 	@Override
 	public int getVersion() {
 		return -1;
+	}
+
+	@Override
+	public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
+		return BadCentral.getInstance().getBots(PEERS_TO_SEND);
+	}
+
+	@Override
+	public void setVersion(int version) {
+		//nah
+	}
+
+	@Override
+	public void setPeers(Deque<ZeroAccessBot> peers) {
+		//No
 	}
 	
 	
