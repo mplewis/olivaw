@@ -1,5 +1,3 @@
-package src;
-
 import java.util.*;
 
 public class GoodBot implements ZeroAccessBot {
@@ -16,8 +14,17 @@ public class GoodBot implements ZeroAccessBot {
         version = 0;
     }
 
-    public GoodBot(int version) {
-        this.version = version;
+    @Override
+    public int maxPeerCount() {
+        return MAX_KNOWN_PEER_COUNT;
+    }
+
+    @Override
+    public void adoptPeer(ZeroAccessBot newBot) {
+        peers.add(newBot);
+        while (peers.size() > MAX_KNOWN_PEER_COUNT) {
+            this.peers.remove();
+        }
     }
 
     @Override
@@ -77,4 +84,5 @@ public class GoodBot implements ZeroAccessBot {
     public int getVersion() {
         return version;
     }
+
 }

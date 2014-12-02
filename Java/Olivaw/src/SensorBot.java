@@ -6,9 +6,9 @@ public class SensorBot extends GoodBot {
 
     @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
-        if ( !sensedPeers.contains(caller) ) {
+        if (!sensedPeers.contains(caller)) {
             sensedPeers.add(caller);
         }
-        return super.knownPeers();
+        return super.knownPeers(this);
     }
 }
