@@ -53,6 +53,8 @@ public class ZeroAccess {
                     newPeers.add(randomBot);
                 }
                 bot.setPeers(newPeers);
+                allBots.add(bot);
+                net.setBots(allBots);
             }
 
             net.tick();
