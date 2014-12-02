@@ -16,10 +16,6 @@ public class GoodBot implements ZeroAccessBot {
         version = 0;
     }
 
-    public GoodBot(int version) {
-        this.version = version;
-    }
-
     @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
         // If you don't have enough peers, return all of them
