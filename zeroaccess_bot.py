@@ -6,8 +6,8 @@ from collections import deque
 
 class ZeroAccessBot(Bot):
     def __repr__(self):
-        return ('<ZeroAccessBot: {}, v{}, {} known peers>'
-                .format(self.address, self.version, len(self.peers)))
+        return ('<ZeroAccessBot: v{}, {} known peers>'
+                .format(self.version, len(self.peers)))
 
     def __init__(self, version=0):
         super().__init__()
