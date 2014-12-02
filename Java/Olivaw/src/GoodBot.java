@@ -23,7 +23,7 @@ public class GoodBot implements ZeroAccessBot {
     @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
         // If you don't have enough peers, return all of them
-        if (peers.size() < PEERS_TO_RETURN) {
+        if (peers.size() <= PEERS_TO_RETURN) {
             return new ArrayList<ZeroAccessBot>(peers);
         }
 

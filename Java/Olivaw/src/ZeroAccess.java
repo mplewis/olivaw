@@ -4,11 +4,13 @@ import java.util.*;
 
 public class ZeroAccess {
 
-    public static final int INITIAL_BOTS = 1000;
+    public static final int INITIAL_BOTS = 10000;
     public static final int INITIAL_PEERS = 16;
-    public static final int SIM_TICKS = 60 * 60 * 24;  // 24 hours
-    public static final int NEW_VER_EVERY = 60 * 60;  // 1 hour
-    public static final int NEW_BOT_EVERY = 60 * 2;  // 2 minutes
+
+    // One tick = 256 seconds = 4m12s
+    public static final int SIM_TICKS = 338;  // 338 ticks ~= 24 hours
+    public static final int NEW_VER_EVERY = 14;  // 14 ticks ~= 1 hour
+    public static final int NEW_BOT_EVERY = 1;  // New bot every 256
 
     private static final Random rng = new Random();
 
@@ -55,6 +57,8 @@ public class ZeroAccess {
                     newPeers.add(randomBot);
                 }
                 bot.setPeers(newPeers);
+                allBots.add(bot);
+                net.setBots(allBots);
             }
 
             net.tick();
