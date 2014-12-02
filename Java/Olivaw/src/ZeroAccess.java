@@ -66,12 +66,7 @@ public class ZeroAccess {
                 int adoptionCount = 0;
                 for (ZeroAccessBot adoptingBot : allBots) {
                     if (rng.nextInt(CHANCE_OF_ADOPTION) == 0) {
-                        Deque<ZeroAccessBot> peers = adoptingBot.getPeers();
-                        peers.add(newBot);
-                        while (peers.size() > adoptingBot.maxPeerCount()) {
-                            peers.remove();
-                        }
-                        adoptingBot.setPeers(peers);
+                        adoptingBot.adoptPeer(newBot);
                         adoptionCount++;
                     }
                 }

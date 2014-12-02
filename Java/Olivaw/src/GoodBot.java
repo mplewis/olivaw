@@ -22,6 +22,14 @@ public class GoodBot implements ZeroAccessBot {
     }
 
     @Override
+    public void adoptPeer(ZeroAccessBot newBot) {
+        peers.add(newBot);
+        while (peers.size() > MAX_KNOWN_PEER_COUNT) {
+            this.peers.remove();
+        }
+    }
+
+    @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
         // If you don't have enough peers, return all of them
         if (peers.size() <= PEERS_TO_RETURN) {

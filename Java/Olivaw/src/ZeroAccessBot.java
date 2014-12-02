@@ -21,4 +21,5 @@ public interface ZeroAccessBot {
 
     public int maxPeerCount();
 
+    public void adoptPeer(ZeroAccessBot newBot);
 }

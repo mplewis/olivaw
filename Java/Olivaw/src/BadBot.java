@@ -48,5 +48,10 @@ public class BadBot implements ZeroAccessBot {
         return 256; // I'm lying
     }
 
+    @Override
+    public void adoptPeer(ZeroAccessBot newBot) {
+        return; // No thanks.
+    }
+
 
 }
