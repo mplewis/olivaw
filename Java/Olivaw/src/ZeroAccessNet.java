@@ -12,8 +12,9 @@ public class ZeroAccessNet {
     }
 
     public void tick() {
-        // Increment tick count and tick all bots. Core functionality!
+        // Increment tick count, shuffle bots, and tick all bots. Core functionality!
         ticks++;
+        Collections.shuffle(bots);
         for (ZeroAccessBot bot : bots) {
             bot.tick();
         }
