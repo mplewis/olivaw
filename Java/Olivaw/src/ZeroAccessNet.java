@@ -12,7 +12,13 @@ public class ZeroAccessNet {
     }
 
     public void tick() {
+        // Increment tick count and tick all bots. Core functionality!
         ticks++;
+        for (ZeroAccessBot bot : bots) {
+            bot.tick();
+        }
+
+        // Tally bot version counts
         Map<Integer, Integer> versionCount = new HashMap<Integer, Integer>();
         for (ZeroAccessBot bot : bots) {
             int v = bot.getVersion();
@@ -23,9 +29,13 @@ public class ZeroAccessNet {
                 versionCount.put(v, count + 1);
             }
         }
+
+        // Get latest version
         List<Integer> allVersions = new ArrayList<Integer>(versionCount.keySet());
         Collections.sort(allVersions);
         int latestVersion = allVersions.get(allVersions.size() - 1);
+
+        // If any bots have changed version, print the new version counts
         if (!lastVersionCount.equals(versionCount)) {
             double now = System.nanoTime() - startTime;
             System.out.println(String.format("%s %s %s %s",
