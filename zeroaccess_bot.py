@@ -30,7 +30,7 @@ class ZeroAccessBot(Bot):
         # Make space for new peers, if necessary; we can only watch 256 peers
         if len(self.peers) + len(unknown_peers) > 256:
             peers_to_remove = len(unknown_peers)
-            while (len(self.peers) > 0 and peers_to_remove > 0):
+            while len(self.peers) > 0 and peers_to_remove > 0:
                 self.peers.popleft()
                 peers_to_remove -= 1
         self.peers.extend(unknown_peers)
