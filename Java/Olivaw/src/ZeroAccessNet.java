@@ -38,6 +38,10 @@ public class ZeroAccessNet {
         lastVersionCount = versionCount;
     }
 
+    public long getTicks() {
+        return ticks;
+    }
+
     public List<ZeroAccessBot> getBots() {
         return bots;
     }
