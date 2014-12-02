@@ -47,6 +47,9 @@ public class PartitionBot extends GoodBot {
     @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
         Set<ZeroAccessBot> callerPeers = assumedPeerLists.get(caller);
+        if ( callerPeers == null ) {
+            return super.knownPeers(caller);
+        }
         PriorityQueue<BotCountPair> queue = new PriorityQueue<BotCountPair>();
 
         for (ZeroAccessBot peer : callerPeers) {
@@ -87,6 +90,8 @@ public class PartitionBot extends GoodBot {
         for (ZeroAccessBot bot : newBots) {
             assumedPeerLists.put(bot, new HashSet<ZeroAccessBot>());
         }
+
+        super.tick();
     }
 
     @Override
@@ -94,6 +99,7 @@ public class PartitionBot extends GoodBot {
         if (assumedPeerLists.get(newBot) == null) {
             assumedPeerLists.put(newBot, new HashSet<ZeroAccessBot>());
         }
+        super.adoptPeer(newBot);
     }
 
     @Override
@@ -101,5 +107,6 @@ public class PartitionBot extends GoodBot {
         for (ZeroAccessBot peer : peers) {
             this.adoptPeer(peer);
         }
+        super.setPeers(peers);
     }
 }

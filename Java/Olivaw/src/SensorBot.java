@@ -11,4 +11,8 @@ public class SensorBot extends GoodBot {
         }
         return super.knownPeers(this);
     }
+
+    public List<ZeroAccessBot> getSensedPeers() {
+        return sensedPeers;
+    }
 }

@@ -41,6 +41,8 @@ public class ZeroAccess {
 
         net.setBots(initialBots);
 
+        List<SensorBot> sensorBots = new ArrayList<SensorBot>();
+
         // Run the net
         int latestVersion = 0;
         for (int tick = 0; tick < SIM_TICKS; tick++) {
@@ -55,12 +57,9 @@ public class ZeroAccess {
             if (net.getTicks() % NEW_BOT_EVERY == 0) {
                 ZeroAccessBot newBot;
                 int whichBot = rng.nextInt(50);
-                if (whichBot == 0) {
-                    newBot = new PartitionBot();
-                } else if (whichBot == 1) {
-                    newBot = new CrawlBot();
-                } else if (whichBot < 7) {
+                if (whichBot < 5) {
                     newBot = new SensorBot();
+                    sensorBots.add((SensorBot) newBot);
                 } else {
                     newBot = new GoodBot();
                 }
@@ -90,6 +89,17 @@ public class ZeroAccess {
 
             net.tick();
         }
+
+        // Report from sensor bots
+        Set<ZeroAccessBot> sensedBots = new HashSet<ZeroAccessBot>();
+        for (SensorBot sensor : sensorBots) {
+            sensedBots.addAll(sensor.getSensedPeers());
+        }
+        for (SensorBot sensor : sensorBots) {
+            sensedBots.remove(sensor);
+        }
+        System.out.println("Number of sensors: " + sensorBots.size());
+        System.out.println("Sensed " + sensedBots.size() + " bots of " + net.getBots().size());
     }
 
 }
