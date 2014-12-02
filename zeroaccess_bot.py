@@ -14,16 +14,16 @@ class ZeroAccessBot(Bot):
         self.peers = deque()
         self.version = version
 
+    def known_peers(self, count=16):
+        return random.sample(tuple(self.peers), count)
+
     def tick(self):
         # Grab a peer from the known peerlist
         peer = random.choice(self.peers)
 
         # If the peer knows more than 16 peers, receive 16 of them
         # Otherwise, receive all (1-15) peers
-        if len(peer.peers) > 16:
-            peer_bots = random.sample(list(peer.peers), 16)
-        else:
-            peer_bots = peer.peers
+        peer_bots = peer.known_peers()
 
         unknown_peers = list(set(self.peers) - set(peer_bots))
 
