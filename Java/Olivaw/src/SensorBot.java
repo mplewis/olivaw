@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class CrawlBot extends GoodBot {
+public class SensorBot extends GoodBot {
 
     @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
