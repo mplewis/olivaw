@@ -4,7 +4,7 @@ public class GoodBot implements ZeroAccessBot {
 
     private static final int MAX_KNOWN_PEER_COUNT = 256;
     protected static final int PEERS_TO_RETURN = 16;
-    private static final Random rng = new Random();
+    protected static final Random rng = new Random();
 
     protected Deque<ZeroAccessBot> peers = new LinkedList<ZeroAccessBot>();
 

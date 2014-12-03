@@ -28,8 +28,8 @@ public class ZeroAccess {
             ZeroAccessBot bot = new GoodBot();
             initialBots.add(bot);
         }
-        for (int i = 0; i < 4; i++) {
-            initialBots.add(new PartitionBot());
+        for (int i = 0; i < 20; i++) {
+            initialBots.add(new ColoringPartitionBot());
         }
 
         // Give each bot INITIAL_PEERS peers to start

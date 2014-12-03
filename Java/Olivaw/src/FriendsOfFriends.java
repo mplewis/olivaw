@@ -1,8 +1,8 @@
 import java.util.*;
 
-public class PartitionBot extends GoodBot {
+public class FriendsOfFriends extends GoodBot {
 
-    private Map<ZeroAccessBot, Deque<ZeroAccessBot>> assumedPeerLists = new HashMap<ZeroAccessBot, Deque<ZeroAccessBot>>();
+    private static Map<ZeroAccessBot, Deque<ZeroAccessBot>> assumedPeerLists = new HashMap<ZeroAccessBot, Deque<ZeroAccessBot>>();
     private static final int MAX_ASSUMED_PEERLIST_SIZE = 16;
 
     protected class BotCountPair implements Comparable {
