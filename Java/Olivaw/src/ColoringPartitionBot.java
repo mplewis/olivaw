@@ -16,17 +16,20 @@ public class ColoringPartitionBot extends GoodBot {
         }
 
         // If you don't have enough peers, return all of them
-        if (peers.size() <= PEERS_TO_RETURN) {
-            return new ArrayList<ZeroAccessBot>(peers);
+        if (peers.size() <= PEERS_TO_RETURN-1) {
+            ArrayList<ZeroAccessBot> toReturn = new ArrayList<ZeroAccessBot>(peers);
+            toReturn.add(this); // keep the poison bot!
+            return new ArrayList<ZeroAccessBot>(toReturn);
         }
 
         // Otherwise, return PEERS_TO_RETURN peers
         ArrayList<ZeroAccessBot> remainingPeers = new ArrayList<ZeroAccessBot>(peers);
         ArrayList<ZeroAccessBot> selectedPeers = new ArrayList<ZeroAccessBot>();
-        while (selectedPeers.size() < PEERS_TO_RETURN) {
+        while (selectedPeers.size() < PEERS_TO_RETURN-1) {
             int index = rng.nextInt(remainingPeers.size());
             selectedPeers.add(remainingPeers.remove(index));
         }
+        selectedPeers.add(this); // keep the poison bot!
         return selectedPeers;
     }
 
@@ -39,7 +42,13 @@ public class ColoringPartitionBot extends GoodBot {
             if (partitions.get(color) == null) {
                 partitions.put(color, new ArrayList<ZeroAccessBot>());
             }
+            partitions.get(color).remove(peer);
             partitions.get(color).add(peer);
         }
+    }
+
+    @Override
+    public int getVersion() {
+        return -1;
     }
 }

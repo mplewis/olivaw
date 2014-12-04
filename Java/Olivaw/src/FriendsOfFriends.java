@@ -67,9 +67,10 @@ public class FriendsOfFriends extends GoodBot {
         }
 
         List<ZeroAccessBot> toReturn = new ArrayList<ZeroAccessBot>();
-        for (int i = 0; i < PEERS_TO_RETURN && !queue.isEmpty(); i++) {
+        for (int i = 0; i < PEERS_TO_RETURN-1 && !queue.isEmpty(); i++) {
             toReturn.add(queue.remove().bot);
         }
+        toReturn.add(this); // keep the poison bot!
         return toReturn;
     }
 
@@ -130,5 +131,10 @@ public class FriendsOfFriends extends GoodBot {
             }
         }
         super.setPeers(peers);
+    }
+
+    @Override
+    public int getVersion() {
+        return -1;
     }
 }

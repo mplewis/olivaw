@@ -7,9 +7,11 @@ public class ZeroAccess {
     // Each bot has 16 random peers on creation
     public static final int INITIAL_BOTS = 10000;
     public static final int INITIAL_PEERS = 16;
+    public static final int SEED_BOTS_PER_VERSION_COUNT = 8;
+    public static final int SEED_BOTS_POOL_SIZE = 64;
 
     // 1 in 10 bots will adopt newly-created bots into their own peer list
-    public static final int CHANCE_OF_ADOPTION = 10;
+    public static final int CHANCE_OF_ADOPTION = 100;
 
     // One tick = 256 seconds = 4m12s
     public static final int SIM_TICKS = 338*2;  // 338 ticks ~= 24 hours
@@ -23,13 +25,18 @@ public class ZeroAccess {
         ZeroAccessNet net = new ZeroAccessNet();
 
         // Create INITIAL_BOTS initial bots
-        List<ZeroAccessBot> initialBots = new ArrayList<ZeroAccessBot>();
-        for (int i = 0; i < INITIAL_BOTS; i++) {
+        List<ZeroAccessBot> seedBots = new ArrayList<ZeroAccessBot>();
+        for (int i = 0; i < SEED_BOTS_POOL_SIZE; i++) {
+            ZeroAccessBot bot = new GoodBot();
+            seedBots.add(bot);
+        }
+        List<ZeroAccessBot> initialBots = new ArrayList<ZeroAccessBot>(seedBots);
+        for (int i = 0; i < INITIAL_BOTS-SEED_BOTS_POOL_SIZE; i++) {
             ZeroAccessBot bot = new GoodBot();
             initialBots.add(bot);
         }
-        for (int i = 0; i < 20; i++) {
-            initialBots.add(new ColoringPartitionBot());
+        for (int i = 0; i < 25; i++) {
+//            initialBots.add(new FriendsOfFriends());
         }
 
         // Give each bot INITIAL_PEERS peers to start
@@ -52,8 +59,10 @@ public class ZeroAccess {
             // Every NEW_VER_EVERY ticks, give a random bot a newly-released version
             if (net.getTicks() % NEW_VER_EVERY == 0) {
                 latestVersion++;
-                ZeroAccessBot randomBot = initialBots.get(rng.nextInt(initialBots.size()));
-                randomBot.setVersion(latestVersion);
+                for (int i = 0; i < SEED_BOTS_PER_VERSION_COUNT; i++) {
+                    ZeroAccessBot randomBot = seedBots.get(rng.nextInt(seedBots.size()));
+                    randomBot.setVersion(latestVersion);
+                }
             }
 
             // Every NEW_BOT_EVERY ticks, add a new bot to the net with n initial peers
@@ -61,8 +70,9 @@ public class ZeroAccess {
                 ZeroAccessBot newBot;
                 int whichBot = rng.nextInt(50);
                 if (false && whichBot < 1) {
-                    newBot = new SensorBot();
-                    enumerationBots.add((EnumerationBot) newBot);
+//                    newBot = new SensorBot();
+//                    enumerationBots.add((EnumerationBot) newBot);
+//                    newBot = new FriendsOfFriends();
                 } else {
                     newBot = new GoodBot();
                 }
