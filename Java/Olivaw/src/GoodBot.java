@@ -54,6 +54,7 @@ public class GoodBot implements ZeroAccessBot {
 
         // Add its known peers to own peer list, replacing existing peers
         List<ZeroAccessBot> receivedPeers = peer.knownPeers(this);
+        receivedPeers.removeAll(this.peers);
         for (ZeroAccessBot newPeer : receivedPeers) {
             peers.add(newPeer);
         }
