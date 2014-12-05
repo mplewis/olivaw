@@ -24,6 +24,8 @@ public class ZeroAccess {
         // Create the net
         ZeroAccessNet net = new ZeroAccessNet();
 
+        List<EnumerationBot> enumerationBots = new ArrayList<EnumerationBot>();
+
         // Create INITIAL_BOTS initial bots
         List<ZeroAccessBot> seedBots = new ArrayList<ZeroAccessBot>();
         for (int i = 0; i < SEED_BOTS_POOL_SIZE; i++) {
@@ -35,8 +37,10 @@ public class ZeroAccess {
             ZeroAccessBot bot = new GoodBot();
             initialBots.add(bot);
         }
-        for (int i = 0; i < 25; i++) {
-//            initialBots.add(new FriendsOfFriends());
+        for (int i = 0; i < 5; i++) {
+            ZeroAccessBot bot = new SensorBot();
+            initialBots.add(bot);
+            enumerationBots.add((EnumerationBot) bot);
         }
 
         // Give each bot INITIAL_PEERS peers to start
@@ -50,8 +54,6 @@ public class ZeroAccess {
         }
 
         net.setBots(initialBots);
-
-        List<EnumerationBot> enumerationBots = new ArrayList<EnumerationBot>();
 
         // Run the net
         int latestVersion = 0;
@@ -69,14 +71,8 @@ public class ZeroAccess {
             if (net.getTicks() % NEW_BOT_EVERY == 0) {
                 ZeroAccessBot newBot;
                 int whichBot = rng.nextInt(50);
-                if (false && whichBot < 1) {
-//                    newBot = new SensorBot();
-//                    enumerationBots.add((EnumerationBot) newBot);
-//                    newBot = new FriendsOfFriends();
-                } else {
-                    newBot = new GoodBot();
-                }
-                
+                newBot = new GoodBot();
+
                 List<ZeroAccessBot> allBots = net.getBots();
                 Deque<ZeroAccessBot> newPeers = new LinkedList<ZeroAccessBot>();
                 for (int i = 0; i < INITIAL_PEERS; i++) {

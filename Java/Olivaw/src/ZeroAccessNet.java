@@ -55,15 +55,15 @@ public class ZeroAccessNet {
             double now = (System.nanoTime() - startTime) / 1000000000; // nanoseconds as seconds
 //            double saturation = (double)versionCount.get(latestVersion)/bots.size();
 //            cumulativeAverageSaturation = ((cumulativeAverageSaturation*ticks)+saturation)/(ticks+1);
-            double versionLag = versionLag(versionCount,latestVersion);
-            cumulativeAverageVersionLag = ((cumulativeAverageVersionLag*ticks)+versionLag)/(ticks+1);
-            System.out.println(String.format("%.2f %s %s %s %.4f %.4f",
+//            double versionLag = versionLag(versionCount,latestVersion);
+//            cumulativeAverageVersionLag = ((cumulativeAverageVersionLag*ticks)+versionLag)/(ticks+1);
+            System.out.println(String.format("%.2f %s %s %s",// %.4f %.4f",
                     now,
                     ticks,
                     latestVersion,
-                    versionCount,
-                    versionLag,
-                    cumulativeAverageVersionLag
+                    versionCount
+//                    versionLag,
+//                    cumulativeAverageVersionLag
             ));
         }
         lastVersionCount = versionCount;

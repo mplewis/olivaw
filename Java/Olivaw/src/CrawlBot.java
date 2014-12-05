@@ -2,7 +2,7 @@ import java.util.*;
 
 public class CrawlBot extends EnumerationBot {
 
-    private Set<ZeroAccessBot> discoveredBots = new HashSet<ZeroAccessBot>();
+    private static Set<ZeroAccessBot> discoveredBots = new HashSet<ZeroAccessBot>();
 
     @Override
     public void tick() {
