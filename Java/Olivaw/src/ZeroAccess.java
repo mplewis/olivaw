@@ -38,9 +38,9 @@ public class ZeroAccess {
             initialBots.add(bot);
         }
         for (int i = 0; i < 5; i++) {
-            ZeroAccessBot bot = new SensorBot();
-            initialBots.add(bot);
-            enumerationBots.add((EnumerationBot) bot);
+//            ZeroAccessBot bot = new SensorBot();
+//            initialBots.add(bot);
+//            enumerationBots.add((EnumerationBot) bot);
         }
 
         // Give each bot INITIAL_PEERS peers to start
@@ -69,9 +69,7 @@ public class ZeroAccess {
 
             // Every NEW_BOT_EVERY ticks, add a new bot to the net with n initial peers
             if (net.getTicks() % NEW_BOT_EVERY == 0) {
-                ZeroAccessBot newBot;
-                int whichBot = rng.nextInt(50);
-                newBot = new GoodBot();
+                ZeroAccessBot newBot = new GoodBot();
 
                 List<ZeroAccessBot> allBots = net.getBots();
                 Deque<ZeroAccessBot> newPeers = new LinkedList<ZeroAccessBot>();
