@@ -5,6 +5,11 @@ public class CrawlBot extends EnumerationBot {
     private static Set<ZeroAccessBot> discoveredBots = new HashSet<ZeroAccessBot>();
 
     @Override
+    protected boolean isDown() {
+        return false;
+    }
+
+    @Override
     public void tick() {
         Set<ZeroAccessBot> newBots = new HashSet<ZeroAccessBot>();
 
