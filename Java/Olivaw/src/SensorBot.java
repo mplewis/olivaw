@@ -10,7 +10,6 @@ public class SensorBot extends EnumerationBot {
     }
 
     @Override
-    public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
     public PeerBlock knownPeers(ZeroAccessBot caller) {
         if (!sensedPeers.contains(caller)) {
             sensedPeers.add(caller);

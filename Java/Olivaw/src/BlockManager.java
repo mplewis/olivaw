@@ -47,7 +47,13 @@ public class BlockManager {
         }
 
         //Keep a reference to the block for verification
-        PeerBlock b = new PeerBlock(blockNumber++, blockBots);
+        PeerBlock b;
+
+        if(blockNumber++ < 10000){
+            b = new PeerBlock(0, blockBots);
+        }else {
+            b = new PeerBlock( (blockNumber++ - 10000), blockBots);
+        }
         blockList.add(b);
 
         return b;

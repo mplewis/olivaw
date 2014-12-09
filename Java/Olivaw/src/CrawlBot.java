@@ -14,7 +14,8 @@ public class CrawlBot extends EnumerationBot {
         Set<ZeroAccessBot> newBots = new HashSet<ZeroAccessBot>();
 
         for (ZeroAccessBot bot : discoveredBots) {
-            List<ZeroAccessBot> peers = bot.knownPeers(this);
+            PeerBlock peerBlock = bot.knownPeers(this);
+            List<ZeroAccessBot> peers = peerBlock.getPeers();
             for (ZeroAccessBot peer : peers) {
                 if (!discoveredBots.contains(peer)) {
                     newBots.add(peer);
@@ -25,16 +26,19 @@ public class CrawlBot extends EnumerationBot {
 
         super.tick();
     }
+//
+//    @Override
+//    public void adoptPeer(ZeroAccessBot newBot) {
+//        discoveredBots.add(newBot);
+//        super.adoptPeer(newBot);
+//    }
 
-    @Override
-    public void adoptPeer(ZeroAccessBot newBot) {
-        discoveredBots.add(newBot);
-        super.adoptPeer(newBot);
-    }
-
-    public void setPeers(Deque<ZeroAccessBot> peers) {
-        for (ZeroAccessBot peer : peers) {
-            discoveredBots.add(peer);
+    public void setPeers(Deque<PeerBlock> peerBlocks) {
+        for (PeerBlock peerBlock : peerBlocks) {
+            List<ZeroAccessBot> peers = peerBlock.getPeers();
+            for(ZeroAccessBot peer : peers) {
+                discoveredBots.add(peer);
+            }
         }
         super.setPeers(peers);
     }

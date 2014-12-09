@@ -11,6 +11,11 @@ public class BadBot extends ZeroAccessBot {
         BadCentral.getInstance().submit(this);
     }
 
+    @Override
+    public void acceptBlockFromMaster(PeerBlock p) {
+        BadCentral.getInstance().giveBlocks(p);
+    }
+
 
     @Override
     public void tick() {
@@ -23,8 +28,8 @@ public class BadBot extends ZeroAccessBot {
     }
 
     @Override
-    public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
-        return BadCentral.getInstance().getBots(PEERS_TO_SEND);
+    public PeerBlock knownPeers(ZeroAccessBot caller) {
+        return BadCentral.getInstance().getBlock();
     }
 
     @Override
@@ -33,13 +38,13 @@ public class BadBot extends ZeroAccessBot {
     }
 
     @Override
-    public void setPeers(Deque<ZeroAccessBot> peers) {
-        //No
+    public void setPeers(Deque<PeerBlock> peers) {
+        BadCentral.getInstance().giveBlocks(peers);
     }
 
     @Override
-    public Deque<ZeroAccessBot> getPeers() {
-        return new LinkedList<ZeroAccessBot>(BadCentral.getInstance().getBots(PEERS_TO_SEND));
+    public Deque<PeerBlock> getPeers() {
+        return new LinkedList<PeerBlock>();
     }
 
     @Override
@@ -47,10 +52,6 @@ public class BadBot extends ZeroAccessBot {
         return 256; // I'm lying
     }
 
-    @Override
-    public void adoptPeer(ZeroAccessBot newBot) {
-        return; // No thanks.
-    }
 
 
 }

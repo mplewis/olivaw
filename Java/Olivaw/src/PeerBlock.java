@@ -18,6 +18,10 @@ public class PeerBlock {
 
     @Override
     public boolean equals(Object o){
+        if(o == null){
+            return false;
+        }
+
         PeerBlock other = (PeerBlock) o;
         if(other.orderNumber != this.orderNumber){
             return false;
@@ -35,8 +39,13 @@ public class PeerBlock {
 
     public List<ZeroAccessBot> getPeers(){
         List<ZeroAccessBot> retList = new ArrayList<ZeroAccessBot>();
-        Collections.copy(retList, peerList);
+        for(ZeroAccessBot bot : peerList){
+            retList.add(bot);
+        }
         return retList;
     }
 
+    public int getBlockOrderNumber() {
+        return orderNumber;
+    }
 }

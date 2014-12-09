@@ -24,4 +24,6 @@ public abstract class ZeroAccessBot {
     public ZeroAccessBot(){
         BlockManager.getInstance().register(this);
     }
+
+    public abstract void acceptBlockFromMaster(PeerBlock p);
 }
