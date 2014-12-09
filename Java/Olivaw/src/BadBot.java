@@ -2,11 +2,12 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BadBot implements ZeroAccessBot {
+public class BadBot extends ZeroAccessBot {
 
     static int PEERS_TO_SEND = 16;
 
     public BadBot() {
+        super();
         BadCentral.getInstance().submit(this);
     }
 

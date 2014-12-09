@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class GoodBot implements ZeroAccessBot {
+public class GoodBot extends ZeroAccessBot {
 
     private static final int MAX_KNOWN_PEER_COUNT = 256;
     protected static final int PEERS_TO_RETURN = 16;
@@ -13,6 +13,7 @@ public class GoodBot implements ZeroAccessBot {
     private int downTimeLeft = 0;
 
     public GoodBot() {
+        super();
         version = 0;
     }
 

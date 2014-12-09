@@ -3,21 +3,25 @@ import java.util.Deque;
 
 import java.util.List;
 
-public interface ZeroAccessBot {
+public abstract class ZeroAccessBot {
 
-    public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller);
+    public abstract List<ZeroAccessBot> knownPeers(ZeroAccessBot caller);
 
-    public void tick();
+    public abstract void tick();
 
-    public void setVersion(int version);
+    public abstract void setVersion(int version);
 
-    public int getVersion();
+    public abstract int getVersion();
 
-    public void setPeers(Deque<ZeroAccessBot> peers);
+    public abstract void setPeers(Deque<ZeroAccessBot> peers);
 
-    public Deque<ZeroAccessBot> getPeers();
+    public abstract Deque<ZeroAccessBot> getPeers();
 
-    public int maxPeerCount();
+    public abstract int maxPeerCount();
 
-    public void adoptPeer(ZeroAccessBot newBot);
+    public abstract void adoptPeer(ZeroAccessBot newBot);
+
+    public ZeroAccessBot(){
+        BlockManager.getInstance().register(this);
+    }
 }
