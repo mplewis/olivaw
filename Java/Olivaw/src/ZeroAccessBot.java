@@ -14,6 +14,7 @@ public interface ZeroAccessBot {
     public int getVersion();
 
     public void setPeers(Deque<ZeroAccessBot> peers);
+
     public Deque<ZeroAccessBot> getPeers();
 
     public int maxPeerCount();

@@ -3,15 +3,39 @@ import java.util.*;
 public class GoodBot implements ZeroAccessBot {
 
     private static final int MAX_KNOWN_PEER_COUNT = 256;
-    private static final int PEERS_TO_RETURN = 16;
-    private static final Random rng = new Random();
+    protected static final int PEERS_TO_RETURN = 16;
+    protected static final Random rng = new Random();
 
-    private Deque<ZeroAccessBot> peers = new LinkedList<ZeroAccessBot>();
+    protected Deque<ZeroAccessBot> peers = new LinkedList<ZeroAccessBot>();
 
     private int version;
+    private boolean permanentlyDown = false;
+    private int downTimeLeft = 0;
 
     public GoodBot() {
         version = 0;
+    }
+
+    private boolean isDown() {
+        return permanentlyDown || downTimeLeft > 0;
+    }
+
+    private boolean maybeGoDown() {
+        int num = Math.abs(rng.nextInt());
+        if ( num % 10000 < 1 ) {
+            downTimeLeft = 28; // 2 hours
+            return true;
+        }
+        if ( num % 200000 < 1 ) {
+            downTimeLeft = 338*2; // 2 month
+            return true;
+        }
+        if ( num % 10000000 < 1 ) {
+            // one in a million chance of dying
+            permanentlyDown = true;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -29,6 +53,10 @@ public class GoodBot implements ZeroAccessBot {
 
     @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
+        if (isDown()) {
+            return new ArrayList<ZeroAccessBot>();
+        }
+
         // If you don't have enough peers, return all of them
         if (peers.size() <= PEERS_TO_RETURN) {
             return new ArrayList<ZeroAccessBot>(peers);
@@ -47,6 +75,14 @@ public class GoodBot implements ZeroAccessBot {
 
     @Override
     public void tick() {
+        if ( isDown() ) {
+            downTimeLeft--;
+            return;
+        } else if ( maybeGoDown() ) {
+            System.out.println("Bot went down for: " + downTimeLeft);
+            return;
+        }
+
         // Grab a random known peer
         LinkedList<ZeroAccessBot> peersList = (LinkedList<ZeroAccessBot>) peers;
         int index = rng.nextInt(peers.size());
@@ -55,6 +91,7 @@ public class GoodBot implements ZeroAccessBot {
         // Add its known peers to own peer list, replacing existing peers
         List<ZeroAccessBot> receivedPeers = peer.knownPeers(this);
         for (ZeroAccessBot newPeer : receivedPeers) {
+            peers.remove(newPeer);
             peers.add(newPeer);
         }
 
