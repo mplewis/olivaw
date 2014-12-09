@@ -5,7 +5,7 @@ import java.util.List;
 
 public abstract class ZeroAccessBot {
 
-    public abstract List<ZeroAccessBot> knownPeers(ZeroAccessBot caller);
+    public abstract PeerBlock knownPeers(ZeroAccessBot caller);
 
     public abstract void tick();
 
@@ -13,13 +13,13 @@ public abstract class ZeroAccessBot {
 
     public abstract int getVersion();
 
-    public abstract void setPeers(Deque<ZeroAccessBot> peers);
+    public abstract void setPeers(Deque<PeerBlock> peers);
 
-    public abstract Deque<ZeroAccessBot> getPeers();
+    public abstract Deque<PeerBlock> getPeers();
 
     public abstract int maxPeerCount();
 
-    public abstract void adoptPeer(ZeroAccessBot newBot);
+    //public abstract void adoptPeer(ZeroAccessBot newBot);
 
     public ZeroAccessBot(){
         BlockManager.getInstance().register(this);

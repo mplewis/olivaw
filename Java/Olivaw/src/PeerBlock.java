@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -6,8 +8,8 @@ import java.util.List;
  */
 public class PeerBlock {
 
-    int orderNumber;
-    List<ZeroAccessBot> peerList;
+    private int orderNumber;
+    private List<ZeroAccessBot> peerList;
 
     public PeerBlock(int number, List<ZeroAccessBot> p){
         orderNumber = number;
@@ -29,6 +31,12 @@ public class PeerBlock {
             return false;
         }
         return true;
+    }
+
+    public List<ZeroAccessBot> getPeers(){
+        List<ZeroAccessBot> retList = new ArrayList<ZeroAccessBot>();
+        Collections.copy(retList, peerList);
+        return retList;
     }
 
 }

@@ -6,7 +6,7 @@ public class GoodBot extends ZeroAccessBot {
     protected static final int PEERS_TO_RETURN = 16;
     protected static final Random rng = new Random();
 
-    protected Deque<ZeroAccessBot> peers = new LinkedList<ZeroAccessBot>();
+    protected Deque<PeerBlock> peers = new LinkedList<PeerBlock>();
 
     private int version;
     private boolean permanentlyDown = false;
@@ -53,25 +53,12 @@ public class GoodBot extends ZeroAccessBot {
     }
 
     @Override
-    public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
-        if (isDown()) {
-            return new ArrayList<ZeroAccessBot>();
+    public PeerBlock knownPeers(ZeroAccessBot caller) {
+        if (isDown() || peers.isEmpty()) {
+            return null;
         }
-
-        // If you don't have enough peers, return all of them
-        if (peers.size() <= PEERS_TO_RETURN) {
-            return new ArrayList<ZeroAccessBot>(peers);
-        }
-
-        // Otherwise, return PEERS_TO_RETURN peers
-        Set<ZeroAccessBot> selectedPeers = new HashSet<ZeroAccessBot>();
-        while (selectedPeers.size() < PEERS_TO_RETURN) {
-            int index = rng.nextInt(peers.size());
-            LinkedList<ZeroAccessBot> peersList = (LinkedList<ZeroAccessBot>) peers;
-            ZeroAccessBot peer = peersList.get(index);
-            selectedPeers.add(peer);
-        }
-        return new ArrayList<ZeroAccessBot>(selectedPeers);
+        int index = rng.nextInt(peers.size());
+        return ( (LinkedList<PeerBlock>) peers).get(index);
     }
 
     @Override
@@ -85,15 +72,16 @@ public class GoodBot extends ZeroAccessBot {
         }
 
         // Grab a random known peer
-        LinkedList<ZeroAccessBot> peersList = (LinkedList<ZeroAccessBot>) peers;
+        LinkedList<PeerBlock> peersList = (LinkedList<PeerBlock>) peers;
         int index = rng.nextInt(peers.size());
-        ZeroAccessBot peer = peersList.get(index);
+        PeerBlock peerBlock = peersList.get(index);
 
+        index = rng.nextInt(peerBlock.getPeers().size());
+        ZeroAccessBot peer = peerBlock.getPeers().get(index);
         // Add its known peers to own peer list, replacing existing peers
-        List<ZeroAccessBot> receivedPeers = peer.knownPeers(this);
-        for (ZeroAccessBot newPeer : receivedPeers) {
-            peers.remove(newPeer);
-            peers.add(newPeer);
+        PeerBlock receivedPeers = peer.knownPeers(this);
+        if(!peers.contains(receivedPeers)){
+            peers.add(receivedPeers);
         }
 
         // Trim peers list to MAX_KNOWN_PEER_COUNT
@@ -107,11 +95,11 @@ public class GoodBot extends ZeroAccessBot {
         }
     }
 
-    public void setPeers(Deque<ZeroAccessBot> peers) {
+    public void setPeers(Deque<PeerBlock> peers) {
         this.peers = peers;
     }
 
-    public Deque<ZeroAccessBot> getPeers() {
+    public Deque<PeerBlock> getPeers() {
         return peers;
     }
 
