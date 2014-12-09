@@ -50,6 +50,11 @@ public class FriendsOfFriends extends GoodBot {
     }
 
     @Override
+    protected boolean isDown() {
+        return false;
+    }
+
+    @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
         Collection<ZeroAccessBot> callerPeers = assumedPeerLists.get(caller);
         if ( callerPeers == null || callerPeers.isEmpty() ) {

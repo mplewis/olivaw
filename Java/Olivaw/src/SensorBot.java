@@ -5,6 +5,11 @@ public class SensorBot extends EnumerationBot {
     private static List<ZeroAccessBot> sensedPeers = new ArrayList<ZeroAccessBot>();
 
     @Override
+    protected boolean isDown() {
+        return false;
+    }
+
+    @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
         if (!sensedPeers.contains(caller)) {
             sensedPeers.add(caller);

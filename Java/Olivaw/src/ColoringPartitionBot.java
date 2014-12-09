@@ -9,6 +9,11 @@ public class ColoringPartitionBot extends GoodBot {
     private static Map<Integer,ArrayList<ZeroAccessBot>> partitions = new HashMap<Integer,ArrayList<ZeroAccessBot>>();
 
     @Override
+    protected boolean isDown() {
+        return false;
+    }
+
+    @Override
     public List<ZeroAccessBot> knownPeers(ZeroAccessBot caller) {
         ArrayList<ZeroAccessBot> peers = partitions.get(new Integer(caller.hashCode() % NUM_COLORS));
         if (peers == null || peers.isEmpty()) {

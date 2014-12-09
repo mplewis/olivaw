@@ -16,18 +16,20 @@ public class GoodBot implements ZeroAccessBot {
         version = 0;
     }
 
-    private boolean isDown() {
+    protected boolean isDown() {
         return permanentlyDown || downTimeLeft > 0;
     }
 
     private boolean maybeGoDown() {
         int num = Math.abs(rng.nextInt());
-        if ( num % 10000 < 1 ) {
-            downTimeLeft = 28; // 2 hours
+        if ( num % 3380 < 1 ) {
+            // 1/10 bots go down for 6h/day
+            downTimeLeft = 84;
             return true;
         }
-        if ( num % 200000 < 1 ) {
-            downTimeLeft = 338*2; // 2 month
+        if ( num % 60840 < 1 ) {
+            // go down for a day every 6 months
+            downTimeLeft = 338*1;
             return true;
         }
         if ( num % 10000000 < 1 ) {
@@ -79,7 +81,7 @@ public class GoodBot implements ZeroAccessBot {
             downTimeLeft--;
             return;
         } else if ( maybeGoDown() ) {
-            System.out.println("Bot went down for: " + downTimeLeft);
+//            System.out.println("Bot went down for: " + downTimeLeft);
             return;
         }
 
